@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>팅글 개인정보처리방침</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<h1>팅글 개인정보처리방침</h1>
+<p class="muted">시행일: 2026년 11월 19일</p>
+<p>팅글(이전 이름: SEAN Personal Agent)은 한 사람(소유자)이 자기 일을 처리하려고 쓰는 개인 비서 앱입니다.</p>
+
+<h2>다루는 정보</h2>
+<ul>
+<li>소유자가 직접 연결한 Google 계정의 Gmail 메일, Google 캘린더 일정, Google Drive 파일(소유자가 허용한 권한 범위)</li>
+<li>소유자가 팅글에 입력한 대화, 할 일, 메모, 기억</li>
+<li>서비스 연결 정보(접근 토큰). 토큰은 암호화해 서버에 보관합니다.</li>
+</ul>
+
+<h2>쓰는 목적과 방법</h2>
+<ul>
+<li>Google 사용자 데이터는 소유자가 요청한 일을 처리할 때만 읽고 씁니다(예: 메일에서 마감일을 찾아 일정에 추가, 메일 초안 작성).</li>
+<li>요청을 처리하려고 필요한 내용을 AI 모델 제공자(OpenAI)의 API로 보냅니다. 팅글은 이 요청을 OpenAI 쪽에 저장하지 않도록(store=false) 보냅니다.</li>
+<li>Google 사용자 데이터를 판매하거나 광고에 쓰지 않으며, 위 처리 외의 목적으로 다른 곳에 제공하지 않습니다. 사람이 Google 사용자 데이터를 읽는 일은 소유자 본인이 하는 경우뿐입니다.</li>
+<li>팅글이 Google API에서 받은 정보의 사용과 다른 앱으로의 전송은 <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API 서비스 사용자 데이터 정책</a>(제한적 사용 요건 포함)을 따릅니다.</li>
+</ul>
+
+<h2>보관과 삭제</h2>
+<ul>
+<li>데이터는 팅글 서버(Supabase)에 보관됩니다.</li>
+<li>앱에서 서비스 연결을 해제하면 저장된 토큰을 지웁니다. Google 계정의 보안 설정에서도 언제든 팅글의 접근 권한을 취소할 수 있습니다.</li>
+<li>대화·할 일·기억은 앱에서 지울 수 있습니다.</li>
+</ul>
+
+<h2>문의</h2>
+<p>so4524@gmail.com</p>
+</main></body></html>
