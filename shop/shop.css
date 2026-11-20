@@ -1,0 +1,5 @@
+:root { color-scheme: light dark; --bg: #fbfaf7; --fg: #1d1c1a; --accent: #b5482b; }
+@media (prefers-color-scheme: dark) { :root { --bg: #171614; --fg: #f1eee8; --accent: #f08a6c; } }
+body { margin: 0 auto; max-width: 640px; padding: 16px; font: 16px/1.6 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+header { padding: 8px 0 16px; } header strong { color: var(--accent); } nav a { margin-right: 12px; }
+button { font: inherit; padding: 6px 12px; margin: 4px 0; } li { margin: 6px 0; }

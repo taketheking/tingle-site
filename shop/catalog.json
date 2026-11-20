@@ -1,0 +1,9 @@
+{
+  "currency": "KRW",
+  "priceUpAmount": 1000,
+  "products": [
+    { "id": "mug", "name": "시험용 머그컵", "price": 12000 },
+    { "id": "notebook", "name": "시험용 공책", "price": 4500 },
+    { "id": "socks", "name": "시험용 양말", "price": 7000 }
+  ]
+}
