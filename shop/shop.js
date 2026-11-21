@@ -9,6 +9,8 @@
   function write(key, value) { try { store.setItem("tingle-shop:" + key, JSON.stringify(value)); } catch { /* private mode: state lives in this page only */ } }
   var params = new URLSearchParams(window.location.search);
   if (params.has("run")) write("run", (params.get("run") || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 64));
+  // Test-only: auth=skip sends the order without the fake identity step (repeat runs without the owner). Not sent to the server.
+  if (params.has("auth")) write("authskip", params.get("auth") === "skip");
   if (params.has("fail")) write("switches", (params.get("fail") || "").split(",").filter(function (name) { return SWITCHES.indexOf(name) >= 0; }));
   var run = read("run", ""), switches = read("switches", []);
   function on(name) { return switches.indexOf(name) >= 0; }
@@ -106,6 +108,7 @@
         })();
       });
       root.appendChild(verify); root.appendChild(status);
+      if (read("authskip", false) === true) { status.textContent = "시험 설정: 본인 인증 없이 바로 접수해요."; verify.click(); }
     } else if (page === "done") {
       root.appendChild(el("h1", {}, "주문 완료 (시험용)"));
       root.appendChild(el("p", {}, "주문번호 " + (params.get("order") || "").replace(/[^A-Z0-9-]/g, "")));
