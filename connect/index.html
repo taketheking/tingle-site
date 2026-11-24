@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">
+<title>팅글 · 이 PC 연결</title>
+<style>
+:root{--ink:#191919;--muted:#6b6b66;--card:#F5F6F3;--lemon:#EDF7BE;--lime:#A4CF4A;--olive:#2f3a10}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;color:var(--ink)}
+main{max-width:600px;margin:0 auto;padding:40px 16px 56px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+.brand img{width:34px;height:34px;border-radius:10px}
+h1{margin:4px 0 0;font-size:24px;letter-spacing:-.02em}
+.lead{margin:0;font-size:14px;color:var(--muted);line-height:1.6}
+.opt{background:var(--card);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.opt.main{background:var(--lemon)}
+.opt h2{margin:0;font-size:16px}
+.opt p{margin:0;font-size:13px;line-height:1.6;color:#44443f}
+.opt.main p{color:var(--olive)}
+.tag{align-self:flex-start;font-size:11px;font-weight:700;background:#fff;border-radius:999px;padding:4px 9px}
+.pill{align-self:flex-start;display:inline-flex;align-items:center;border:0;border-radius:999px;background:var(--ink);color:#fff;font:inherit;font-size:14px;font-weight:600;min-height:42px;padding:0 18px;text-decoration:none;cursor:pointer}
+.pill.quiet{background:#fff;color:var(--ink)}
+.pill:disabled{opacity:.6;cursor:default}
+.code{background:#fff;border-radius:14px;padding:14px;text-align:center;color:var(--olive)}
+.code strong{display:block;font-size:36px;letter-spacing:.18em;font-weight:600;font-variant-numeric:tabular-nums}
+.small{font-size:11.5px;color:var(--muted);margin:0;line-height:1.6}
+[hidden]{display:none!important}
+</style></head>
+<body><main>
+<div class="brand"><img src="mark.png" alt="">팅글</div>
+<h1>이 PC를 팅글에 연결해요</h1>
+<p class="lead" id="lead">휴대폰 팅글 앱에서 보낸 주소예요.</p>
+
+<section class="opt main" id="chrome">
+  <span class="tag" id="chrome-tag">확인하는 중…</span>
+  <h2 id="chrome-title">이 Chrome 연결하기</h2>
+  <p id="chrome-text">이 Chrome에 팅글 확장이 있는지 보고 있어요.</p>
+  <div class="code" id="chrome-code" hidden><strong id="chrome-digits">--- ---</strong><span class="small" id="chrome-left"></span></div>
+  <button class="pill" id="chrome-connect" hidden>이 Chrome 연결하기</button>
+  <a class="pill" id="chrome-store" hidden target="_blank" rel="noopener">Chrome 웹 스토어에서 팅글 추가</a>
+</section>
+
+<section class="opt" id="installer">
+  <h2>연결 프로그램까지 설치 (Windows)</h2>
+  <p>화면 전체·카카오톡 PC 앱·파일까지 맡기려면 연결 프로그램을 설치해요. 관리자 권한은 필요 없어요.</p>
+  <a class="pill quiet" id="installer-link">설치 파일 받기</a>
+</section>
+<p class="small">이 페이지는 주소의 표를 팅글 확장과 설치 파일에만 넘겨요. 표는 이 페이지를 올린 서버로 가지 않아요.</p>
+</main>
+<script>
+(() => {
+  const EXTENSION = "gbijcikpdmfnehkbdgegefkjkbpbmcab";
+  const CLOUD = "https://ozberadipgkirxvnqlpl.supabase.co/functions/v1/sean-missions";
+  const STORE = "https://chromewebstore.google.com/detail/" + EXTENSION;
+  const ticket = (location.hash.match(/^#([A-HJKMNP-Z2-9]{10})$/) || [])[1] || null;
+  const $ = id => document.getElementById(id);
+  const show = (id, on) => { $(id).hidden = !on; };
+  const say = (tag, title, text) => { $("chrome-tag").textContent = tag; $("chrome-title").textContent = title; $("chrome-text").textContent = text; };
+  $("chrome-store").href = STORE;
+  if (!ticket) {
+    $("lead").textContent = "휴대폰 팅글 앱의 '컴퓨터 추가'에서 받은 주소로 열어 주세요. 이 주소에는 연결용 표가 없어요.";
+    show("chrome", false); show("installer", false); return;
+  }
+  $("installer-link").href = CLOUD + "/install/" + ticket;
+  $("lead").textContent = "휴대폰 팅글 앱에서 보낸 주소예요. 하루 동안 쓸 수 있어요.";
+  const ask = message => new Promise(resolve => {
+    try {
+      if (!(window.chrome && chrome.runtime && chrome.runtime.sendMessage)) { resolve(null); return; }
+      chrome.runtime.sendMessage(EXTENSION, message, reply => { void chrome.runtime.lastError; resolve(reply || null); });
+    } catch { resolve(null); }
+  });
+  let timer = null;
+  function render(reply) {
+    show("chrome-connect", false); show("chrome-store", false); show("chrome-code", false);
+    if (!reply) { say("이 Chrome에는 팅글 확장이 없어요", "Chrome 웹 스토어에서 팅글 추가", "추가한 뒤 이 페이지를 새로고침하면 바로 연결할 수 있어요. 설치 없이 이 Chrome에서 웹 페이지 일을 맡길 수 있어요."); show("chrome-store", true); return; }
+    switch (reply.state) {
+      case "worker": say("이 PC는 이미 연결돼 있어요", "연결 프로그램으로 연결된 PC예요", "팅글 확장은 이 PC의 연결 프로그램과 이미 이어져 있어요. 더 할 일이 없어요."); show("installer", false); return;
+      case "paired": say("연결됐어요", reply.name || "이 Chrome", "휴대폰에서 이 Chrome에 웹 일을 맡길 수 있어요. 이 창은 닫아도 돼요."); return;
+      case "waiting": {
+        say("휴대폰을 확인해 주세요", "같은 숫자가 휴대폰에 떴어요", "팅글 앱에서 숫자가 같으면 '맞아요'를 눌러 주세요. 다르면 '아니에요'를 누르세요.");
+        $("chrome-digits").textContent = reply.code.slice(0, 3) + " " + reply.code.slice(3);
+        const minutes = Math.max(0, Math.round((Date.parse(reply.expiresAt) - Date.now()) / 60000));
+        $("chrome-left").textContent = minutes + "분 안에 확인해 주세요";
+        show("chrome-code", true);
+        clearTimeout(timer); timer = setTimeout(async () => render(await ask({ type: "check" })), 2500);
+        return;
+      }
+      case "rejected": say("연결하지 않았어요", "휴대폰에서 '아니에요'를 눌렀어요", "다시 연결하려면 휴대폰에서 '컴퓨터 추가'로 새 주소를 받아 주세요."); return;
+      case "expired": say("시간이 지났어요", "숫자가 만료됐어요", "아래 버튼으로 다시 시작할 수 있어요."); show("chrome-connect", true); return;
+      case "error": say("연결하지 못했어요", "다시 시도해 주세요", reply.message || "잠시 뒤 다시 눌러 주세요."); show("chrome-connect", true); return;
+      default: say("이 Chrome에 팅글 확장이 있어요", "이 Chrome 연결하기", "설치 없이 바로 연결돼요. 팅글이 이 Chrome에서 웹 페이지 일을 해요. 로그인된 사이트 그대로요."); show("chrome-connect", true);
+    }
+  }
+  $("chrome-connect").addEventListener("click", async () => {
+    $("chrome-connect").disabled = true;
+    render(await ask({ type: "enroll", ticket }));
+    $("chrome-connect").disabled = false;
+  });
+  ask({ type: "ping" }).then(render);
+})();
+</script>
+</body></html>
